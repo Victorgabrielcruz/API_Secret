@@ -10,13 +10,17 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // Middleware para Render
+// Middleware para Render
 app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:3000',
     'https://victorgabrielcruzpereira.com.br',
     'https://www.victorgabrielcruzpereira.com.br'
-  ]
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 
