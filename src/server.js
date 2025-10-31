@@ -278,3 +278,65 @@ process.on('SIGINT', async () => {
 });
 
 startServer();
+
+// Enviar mensagem anônima
+app.post('/api/mensagens', async (req, res) => {
+  let client;
+  try {
+    const { mensagem, privada = false } = req.body;
+    
+    if (!mensagem || mensagem.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Mensagem é obrigatória'
+      });
+    }
+    
+    client = await pool.connect();
+    const result = await client.query(
+      'INSERT INTO mensagens (mensagem, privada) VALUES ($1, $2) RETURNING *',
+      [mensagem.trim(), privada]
+    );
+    
+    res.status(201).json({
+      success: true,
+      mensagem: result.rows[0],
+      message: 'Mensagem enviada com sucesso! 💌'
+    });
+    
+  } catch (error) {
+    console.error('Erro ao enviar mensagem:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Erro ao enviar mensagem' 
+    });
+  } finally {
+    if (client) client.release();
+  }
+});
+
+// Obter mensagens públicas
+app.get('/api/mensagens', async (req, res) => {
+  let client;
+  try {
+    client = await pool.connect();
+    const result = await client.query(
+      'SELECT id, mensagem, data_criacao FROM mensagens WHERE privada = false ORDER BY data_criacao DESC LIMIT 50'
+    );
+    
+    res.json({
+      success: true,
+      mensagens: result.rows,
+      total: result.rows.length
+    });
+    
+  } catch (error) {
+    console.error('Erro ao obter mensagens:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Erro ao carregar mensagens' 
+    });
+  } finally {
+    if (client) client.release();
+  }
+});
