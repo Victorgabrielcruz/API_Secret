@@ -13,12 +13,11 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:3000',
-    'https://www.victorgabrielcruzpereira.com.br',
-    'https://www.victorgabrielcruzpereira.com.br/lab', // Substitua pelo seu frontend no Render
-    'https://victorgabriel-portfolio.onrender.com' // Exemplo
-  ],
-  credentials: true
+    'https://victorgabrielcruzpereira.com.br',
+    'https://www.victorgabrielcruzpereira.com.br'
+  ]
 }));
+
 
 app.use(express.json());
 
