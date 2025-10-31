@@ -13,7 +13,7 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:3000',
-    'https://seu-frontend.onrender.com', // Substitua pelo seu frontend no Render
+    'https://www.victorgabrielcruzpereira.com.br', // Substitua pelo seu frontend no Render
     'https://victorgabriel-portfolio.onrender.com' // Exemplo
   ],
   credentials: true
