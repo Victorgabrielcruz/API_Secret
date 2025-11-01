@@ -1,31 +1,31 @@
-import bcrypt from 'bcrypt';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const AuthService = {
-  // Verificar credenciais
   async verificarCredenciais(username, password) {
     try {
-      // Aqui você buscaria do banco, mas como é só um usuário:
-      const usuarioValido = {
-        username: 'admin',
-        passwordHash: '$2b$10$8J6aXl5Y3qjz1Q1VQ2Q3uOcWQ3nY5Z7A9B1C3D5E7G9I1K3M5O7Q9S1U3W5' // admin123
-      };
+      // Simular um pequeno delay para segurança
+      await new Promise(resolve => setTimeout(resolve, 800));
 
-      if (username !== usuarioValido.username) {
+      console.log('Tentativa de login:', { username, password: '***' });
+
+      if (username !== process.env.ADMIN_USERNAME) {
         return { success: false, error: 'Credenciais inválidas' };
       }
 
-      const senhaValida = await bcrypt.compare(password, usuarioValido.passwordHash);
+      if (password !== process.env.ADMIN_PASSWORD) {
+        return { success: false, error: 'Credenciais inválidas' };
+      }
+
+      console.log('Login realizado com sucesso para:', username);
       
-      if (!senhaValida) {
-        return { success: false, error: 'Credenciais inválidas' };
-      }
-
       return { 
         success: true, 
         usuario: { 
           id: 1, 
-          username: usuarioValido.username 
-        } 
+          username: process.env.ADMIN_USERNAME 
+        },
+        token: process.env.ADMIN_TOKEN
       };
 
     } catch (error) {
@@ -34,18 +34,18 @@ export const AuthService = {
     }
   },
 
-  // Middleware para verificar autenticação
   middlewareAuth(req, res, next) {
-    // Em produção, você usaria JWT ou sessions
-    // Aqui vou usar uma verificação simples por query param
     const token = req.headers.authorization || req.query.token;
     
-    if (token === 'admin_token_secreto') {
+    console.log('Verificando token:', token ? '***' + token.slice(-4) : 'Nenhum token');
+    
+    if (token === process.env.ADMIN_TOKEN) {
       next();
     } else {
+      console.log('Acesso negado - Token inválido');
       res.status(401).json({
         success: false,
-        error: 'Não autorizado'
+        error: 'Não autorizado. Faça login novamente.'
       });
     }
   }
