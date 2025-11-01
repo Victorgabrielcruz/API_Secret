@@ -249,12 +249,12 @@ app.post('/api/admin/login', async (req, res) => {
       });
     }
 
-    // Em produção, geraria um JWT token
+    // 🔥 CORREÇÃO: Retornar a mesma estrutura que o frontend espera
     res.json({
       success: true,
-      message: 'Login realizado com sucesso',
+      message: resultado.message,
       usuario: resultado.usuario,
-      token: 'admin_token_secreto' // Token simples para demonstração
+      token: resultado.token // ← Usar o token do AuthService
     });
 
   } catch (error) {
